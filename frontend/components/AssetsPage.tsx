@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Section from './Section';
 import Button from './ui/Button';
-import { AssetCard } from './AssetCard';
+import AssetCard from './AssetCard';
 
 type Asset = {
   id: number;
