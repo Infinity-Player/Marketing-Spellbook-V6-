@@ -118,7 +118,7 @@ export default function BriefPage(){
           </label>
           <Button onClick={()=>{
             // generate assets placeholder
-            const asset = { id: Date.now(), headlines: ['Eco headline'], primaryText: 'Eco primary text' };
+            const asset = { id: Date.now(), headlines: ['Eco headline'], primaryText: ['Eco primary text'] };
             if (typeof window !== 'undefined') {
               const arr = JSON.parse(localStorage.getItem('ms_assets')||'[]');
               arr.unshift(asset);
