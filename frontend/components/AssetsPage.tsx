@@ -66,32 +66,11 @@ export default function AssetsPage(){
         {assets.length === 0 ? (
           <p className="text-gray-500">No assets generated yet. Go to the Brief tab and generate some assets.</p>
         ) : (
-          <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {assets.map((asset) => (
-              <div key={asset.id} className="border rounded-lg p-4">
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="font-semibold">Asset #{asset.id}</h3>
-                  <Button variant="ghost" onClick={() => downloadAsset(asset)}>
-                    Download JSON
-                  </Button>
-                </div>
-                <div className="space-y-3">
-                  <div>
-                    <h4 className="font-medium text-sm mb-1">Headlines</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {asset.headlines.map((headline, index) => (
-                        <div key={index} className="bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded">
-                          <span className="mr-2">{headline}</span>
-                          <button 
-                            onClick={() => copyToClipboard(headline)}
-                            className="text-xs bg-gray-200 dark:bg-gray-600 px-1 rounded"
-                          >
-                            Copy
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+              <AssetCard key={asset.id} asset={asset} onDownload={downloadAsset} onCopyToClipboard={copyToClipboard} />
+            ))}
+          </div>
                   <div>
                     <h4 className="font-medium text-sm mb-1">Primary Text</h4>
                     <ul className="list-disc pl-5">
