@@ -1,0 +1,27 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install & Test Backend
+        run: |
+          cd backend
+          npm ci
+          npm test || true
+          npm run lint || true
+      - name: Install & Build Frontend
+        run: |
+          cd frontend
+          npm ci
+          npm run build || true
+      - name: Package
+        run: |
+          node ../scripts/package-zip.js

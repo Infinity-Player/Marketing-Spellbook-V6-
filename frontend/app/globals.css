@@ -1,0 +1,17 @@
+:root{
+  --bg:#ffffff;
+  --text:#000000;
+  --btn-bg:#111827;
+  --btn-text:#ffffff;
+}
+html.theme-classic { --bg: #d8dce1ff; --text:#131929ff; --btn-bg:#0b1b2b; --btn-text:#ffffff; }
+html.theme-light { --bg: #ffffff; --text:#000000; --btn-bg:#111827; --btn-text:#ffffff; }
+html.theme-dark { --bg: #000000; --text:#ffffff; --btn-bg:#e5e7eb; --btn-text:#000000; }
+
+body{ background:var(--bg); color:var(--text); font-family: system-ui, -apple-system, 'Segoe UI', Roboto; }
+.btn { padding: .5rem 1rem; border-radius: .375rem; background: var(--btn-bg); color: var(--btn-text); }
+.btn-primary { background-color: #4f46e5; color: white; }
+.btn-primary:hover { background-color: #4338ca; }
+.btn-ghost { background: #f3f4f6; color: #111827; }
+.btn-ghost:hover { background: #e5e7eb; }
+.section { padding: 1rem; border-radius: .5rem; background: rgba(255,255,255,0.04); }
