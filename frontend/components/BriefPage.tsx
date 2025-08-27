@@ -23,13 +23,17 @@ export default function BriefPage(){
   useEffect(()=> setMounted(true), []);
   useEffect(()=> {
     if (!mounted) return;
-    const raw = localStorage.getItem('ms_brief');
-    if (raw) setBrief(JSON.parse(raw));
+    if (typeof window !== 'undefined') {
+      const raw = localStorage.getItem('ms_brief');
+      if (raw) setBrief(JSON.parse(raw));
+    }
   }, [mounted]);
 
   function prefillEco(){
     setBrief(ECO);
-    localStorage.setItem('ms_brief', JSON.stringify(ECO));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('ms_brief', JSON.stringify(ECO));
+    }
     alert('Prefilled EcoSip');
   }
   function downloadJSON(){
@@ -45,7 +49,10 @@ export default function BriefPage(){
     reader.onload = ()=> {
       try {
         const obj = JSON.parse(reader.result as string);
-        setBrief(obj); localStorage.setItem('ms_brief', JSON.stringify(obj));
+        setBrief(obj);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('ms_brief', JSON.stringify(obj));
+        }
         alert('Imported brief');
       } catch(err){ alert('invalid json'); }
     };
@@ -112,9 +119,11 @@ export default function BriefPage(){
           <Button onClick={()=>{
             // generate assets placeholder
             const asset = { id: Date.now(), headlines: ['Eco headline'], primaryText: 'Eco primary text' };
-            const arr = JSON.parse(localStorage.getItem('ms_assets')||'[]');
-            arr.unshift(asset);
-            localStorage.setItem('ms_assets', JSON.stringify(arr));
+            if (typeof window !== 'undefined') {
+              const arr = JSON.parse(localStorage.getItem('ms_assets')||'[]');
+              arr.unshift(asset);
+              localStorage.setItem('ms_assets', JSON.stringify(arr));
+            }
             alert('Generated assets (placeholder)');
           }} variant="primary">Generate Assets</Button>
         </div>

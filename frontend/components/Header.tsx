@@ -3,7 +3,9 @@ import React, { useEffect, useState } from 'react';
 export default function Header(){
   const [theme, setTheme] = useState<string | null>(null);
   useEffect(()=>{
-    setTheme(localStorage.getItem('ms_theme') || 'classic');
+    if (typeof window !== 'undefined') {
+      setTheme(localStorage.getItem('ms_theme') || 'classic');
+    }
   },[]);
   useEffect(()=>{
     if (!theme) return;
