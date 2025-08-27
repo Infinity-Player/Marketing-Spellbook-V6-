@@ -1,7 +1,3 @@
-/**
- * Minimal Express server scaffold with JWT auth, Socket.IO and queue hooks.
- * For production use, run `npm ci` and configure environment variables from .env
- */
 const express = require('express');
 const http = require('http');
 const jwt = require('jsonwebtoken');
@@ -16,16 +12,16 @@ const JWT_SECRET = process.env.JWT_SECRET || 'dev_jwt_secret';
 const app = express();
 app.use(express.json());
 
-// simple in-memory store for dev (also seed)
+// Simple in-memory/file store
 const DATA_DIR = path.join(__dirname, 'data');
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
 let users = [];
 if (fs.existsSync(USERS_FILE)) {
   try { users = JSON.parse(fs.readFileSync(USERS_FILE)); } catch(e){ users=[]; }
 }
 if (!users.find(u=>u.email==='dev@local.test')) {
-  // seed dev user
   const pwHash = bcrypt.hashSync('Password123!', 8);
   users.push({ id:1, email:'dev@local.test', password: pwHash, role:'admin' });
   fs.writeFileSync(USERS_FILE, JSON.stringify(users, null,2));
@@ -47,8 +43,7 @@ app.post('/api/auth/register', async (req, res) => {
   const user = { id, email, password: pwHash, role:'user' };
   users.push(user);
   fs.writeFileSync(USERS_FILE, JSON.stringify(users, null,2));
-  const tokens = signTokens(user);
-  res.json(tokens);
+  res.json(signTokens(user));
 });
 
 app.post('/api/auth/login', async (req, res) => {
@@ -66,14 +61,13 @@ app.post('/api/auth/refresh', (req,res)=>{
     const payload = jwt.verify(refresh, JWT_SECRET);
     const user = users.find(u=>u.id===payload.id);
     if (!user) return res.status(401).end();
-    const tokens = signTokens(user);
-    return res.json(tokens);
+    return res.json(signTokens(user));
   } catch(e){
     return res.status(401).json({ error:'invalid' });
   }
 });
 
-// Simple share save to file
+// Simple share
 const SHARES_FILE = path.join(DATA_DIR, 'shares.json');
 let shares = [];
 if (fs.existsSync(SHARES_FILE)) {
@@ -93,7 +87,6 @@ app.get('/api/share/:id',(req,res)=>{
   res.json(rec);
 });
 app.delete('/api/share/:id',(req,res)=>{
-  // admin-only - check header x-admin: true or JWT
   const isAdmin = req.headers['x-admin']==='true';
   if (!isAdmin) return res.status(403).json({ error:'admin only' });
   shares = shares.filter(s=>s.id!==req.params.id);
@@ -101,40 +94,26 @@ app.delete('/api/share/:id',(req,res)=>{
   res.json({ ok:true });
 });
 
-// Health endpoints (simple and namespaced)
-app.get('/health', (req, res) => {
-  return res.json({ ok: true, uptime: process.uptime(), timestamp: new Date().toISOString() });
-});
+// Health endpoints
+app.get('/health', (req, res) => res.json({ ok: true, uptime: process.uptime(), timestamp: new Date().toISOString() }));
+app.get('/api/health', (req, res) => res.json({ ok: true, service: 'backend', uptime: process.uptime(), timestamp: new Date().toISOString() }));
 
-app.get('/api/health', (req, res) => {
-  return res.json({ ok: true, service: 'backend', uptime: process.uptime(), timestamp: new Date().toISOString() });
-});
-
-/**
- * Socket.IO with JWT handshake
- */
+// Socket.IO with JWT
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: '*' }});
 io.use((socket, next)=>{
   const token = socket.handshake.auth && socket.handshake.auth.token;
   if (!token) return next(new Error('unauth'));
   try {
-    const payload = jwt.verify(token, JWT_SECRET);
-    socket.user = payload;
+    socket.user = jwt.verify(token, JWT_SECRET);
     return next();
   } catch(e){
     return next(new Error('unauth'));
   }
 });
 io.on('connection', socket=>{
-  socket.on('join-brief', (briefId)=> {
-    const room = `brief_room_${briefId}`;
-    socket.join(room);
-  });
-  socket.on('brief:update', ({briefId, data})=>{
-    const room = `brief_room_${briefId}`;
-    socket.to(room).emit('brief:update', data);
-  });
+  socket.on('join-brief', (briefId)=> socket.join(`brief_room_${briefId}`));
+  socket.on('brief:update', ({briefId, data})=> socket.to(`brief_room_${briefId}`).emit('brief:update', data));
 });
 
 server.listen(PORT, ()=> console.log('Backend listening on', PORT));
