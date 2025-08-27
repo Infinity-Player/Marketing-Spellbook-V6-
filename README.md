@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-# Marketing-Spellbook-V6-
-=======
-# Marketing Spellbook Ultimate v6
-
-Production-capable full-stack scaffold (minimal implementation) including:
-
-This repo is a scaffold implementing the full feature list required. See `/run-and-test.md` for exact run instructions.
->>>>>>> be06b2b6 (Merge UI components from ultimate into v6; preserve v6 themes and docker fixes)
 # Marketing Spellbook Ultimate v6
 
 Production-capable full-stack scaffold (minimal implementation) including:
@@ -20,3 +11,6 @@ Production-capable full-stack scaffold (minimal implementation) including:
 - Scripts to install, start, migrate, package zip
 
 This repo is a scaffold implementing the full feature list required. See `/run-and-test.md` for exact run instructions.
+
+IMPORTANT: The repository history was rewritten to remove tracked `node_modules` directories and large files.
+Please see `HISTORY_REWRITE.md` for exact commands collaborators must run to resync local clones.
