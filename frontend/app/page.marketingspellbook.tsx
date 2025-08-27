@@ -11,7 +11,7 @@ import TemplatesSection from '../components/sections/TemplatesSection';
 import CommunitySection from '../components/sections/CommunitySection';
 import CTASection from '../components/sections/CTASection';
 
-export default function Page() {
+export default function MarketingSpellbookPage() {
   return (
     <div className="min-h-screen bg-slate-900 font-space-grotesk">
       <Navigation />
