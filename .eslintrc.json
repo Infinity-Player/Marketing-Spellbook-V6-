@@ -1,15 +1,7 @@
 {
   "root": true,
-  "env": {
-    "node": true,
-    "es2021": true
-  },
   "extends": [
-    "eslint:recommended"
-  ],
-  "settings": {
-    "import/resolver": {
-      "typescript": {}
-    }
-  }
+    "eslint:recommended",
+    "next/core-web-vitals"
+  ]
 }

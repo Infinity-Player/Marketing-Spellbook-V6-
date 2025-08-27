@@ -71,44 +71,6 @@ export default function AssetsPage(){
               <AssetCard key={asset.id} asset={asset} onDownload={downloadAsset} onCopyToClipboard={copyToClipboard} />
             ))}
           </div>
-                  <div>
-                    <h4 className="font-medium text-sm mb-1">Primary Text</h4>
-                    <ul className="list-disc pl-5">
-                      {asset.primaryText.map((text, index) => (
-                        <li key={index} className="mb-1">{text}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  {asset.emailSubject && (
-                    <div>
-                      <h4 className="font-medium text-sm mb-1">Email Subject</h4>
-                      <p>{asset.emailSubject}</p>
-                    </div>
-                  )}
-                  {asset.emailBody && (
-                    <div>
-                      <h4 className="font-medium text-sm mb-1">Email Body</h4>
-                      <pre className="whitespace-pre-wrap bg-gray-100 dark:bg-gray-700 p-2 rounded">
-                        {asset.emailBody}
-                      </pre>
-                    </div>
-                  )}
-                  {asset.variants && asset.variants.length > 0 && (
-                    <div>
-                      <h4 className="font-medium text-sm mb-1">Variants</h4>
-                      <ul className="list-disc pl-5">
-                        {asset.variants.map((variant) => (
-                          <li key={variant.id} className="mb-1">
-                            <strong>{variant.hypothesis}</strong>: {variant.headline}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
         )}
       </Section>
     </div>
