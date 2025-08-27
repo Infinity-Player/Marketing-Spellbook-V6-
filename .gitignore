@@ -1,0 +1,12 @@
+# Ignore node_modules for frontend and backend
+frontend/node_modules/
+backend/node_modules/
+
+# Common ignores
+.env
+.env.local
+.DS_Store
+.next
+dist/
+.vscode/
+.idea/
