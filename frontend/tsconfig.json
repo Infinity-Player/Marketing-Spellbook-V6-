@@ -23,7 +23,13 @@
       {
         "name": "next"
       }
-    ]
+    ],
+
+    // 👇 Added for @ alias
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
   "include": [
     "next-env.d.ts",

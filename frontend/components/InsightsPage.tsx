@@ -1,6 +1,7 @@
 'use client';
 import React,{useState} from 'react';
-import { parseCSV } from '../../lib/csvClient';
+import { parseCSV } from "@/lib/csvClient";
+
 export default function InsightsPage(){
   const [metrics, setMetrics] = useState<any>(null);
   function handleFile(e:any){
