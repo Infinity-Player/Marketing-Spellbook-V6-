@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "dev": "node server.js",
-    "migrate": "node migrate.js",
-    "test": "jest --runInBand"
+  "dev": "node server.js",
+  "migrate": "node migrate.js",
+  "test": "jest --runInBand",
+  "smoke": "node ./scripts/smoke.js"
   },
   "dependencies": {
     "express": "^4.18.2",

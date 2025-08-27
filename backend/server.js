@@ -101,6 +101,15 @@ app.delete('/api/share/:id',(req,res)=>{
   res.json({ ok:true });
 });
 
+// Health endpoints (simple and namespaced)
+app.get('/health', (req, res) => {
+  return res.json({ ok: true, uptime: process.uptime(), timestamp: new Date().toISOString() });
+});
+
+app.get('/api/health', (req, res) => {
+  return res.json({ ok: true, service: 'backend', uptime: process.uptime(), timestamp: new Date().toISOString() });
+});
+
 /**
  * Socket.IO with JWT handshake
  */
