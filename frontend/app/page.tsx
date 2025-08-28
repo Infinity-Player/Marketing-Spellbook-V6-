@@ -22,11 +22,29 @@ export default function Page() {
   const [activeTab, setActiveTab] = useState("Dashboard")
 
   // Handlers
-  const handleImportJson = () => {
-    const input = document.createElement("input")
-    input.type = "file"
-    input.accept = "application/json"
-    input.onchange = () => toast.success("JSON imported successfully (stub)")
+  const handleImportJson = async () => {
+   const input = document.createElement("input")
+   input.type = "file"
+   input.accept = "application/json"
+   input.onchange = async () => {
+     if (input.files && input.files[0]) {
+       const file = input.files[0]
+        const text = await file.text()
+       const json = JSON.parse(text)
+
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/briefs`, {
+         method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(json),
+        })
+
+        if (res.ok) {
+          toast.success("Brief uploaded successfully!")
+        } else {
+          toast.error("Upload failed")
+        }
+      }
+   }
     input.click()
   }
 
