@@ -1,78 +1,99 @@
-'use client';
-import React, { useState, useEffect } from 'react';
-import Section from './Section';
-import Button from './ui/Button';
-import AssetCard from './AssetCard';
+"use client";
+import { useEffect, useState } from "react";
+import * as ExcelJS from "exceljs";
 
-type Asset = {
-  id: number;
-  headlines: string[];
+interface Asset {
+  id: string;
   primaryText: string[];
-  emailSubject?: string;
-  emailBody?: string;
-  variants?: {
-    id: string;
-    hypothesis: string;
-    headline: string;
-  }[];
-};
+  secondaryText?: string;
+  keywords?: string[];
+}
 
-export default function AssetsPage(){
+export default function AssetsPage() {
   const [assets, setAssets] = useState<Asset[]>([]);
-  const [mounted, setMounted] = useState(false);
-  
-  useEffect(()=> setMounted(true), []);
-  
-  useEffect(()=> {
-    if (!mounted) return;
-    const raw = localStorage.getItem('ms_assets');
-    if (raw) {
+
+  useEffect(() => {
+    const saved = localStorage.getItem("assets");
+    if (saved) {
       try {
-        setAssets(JSON.parse(raw));
-      } catch (e) {
-        console.error('Error parsing assets', e);
+        const parsed = JSON.parse(saved);
+        // Defensive normalization
+        setAssets(
+          Array.isArray(parsed)
+            ? parsed.map((a: any, idx: number) => ({
+                id: a.id || `asset-${idx}`,
+                primaryText: Array.isArray(a.primaryText)
+                  ? a.primaryText
+                  : [a.primaryText ?? ""],
+                secondaryText: a.secondaryText || "",
+                keywords: Array.isArray(a.keywords) ? a.keywords : [],
+              }))
+            : []
+        );
+      } catch {
         setAssets([]);
       }
     }
-  }, [mounted]);
-  
-  const downloadAsset = (asset: Asset) => {      
-    const data = JSON.stringify(asset, null, 2);
-    const blob = new Blob([data], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `asset-${asset.id}.json`;
-    a.click();
-  };
-  
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text).then(() => {
-      alert('Copied to clipboard!');
+  }, []);
+
+  const exportToExcel = async () => {
+    const wb = new ExcelJS.Workbook();
+    const ws = wb.addWorksheet("Assets");
+
+    ws.columns = [
+      { header: "Primary Text", key: "primaryText", width: 40 },
+      { header: "Secondary Text", key: "secondaryText", width: 30 },
+      { header: "Keywords", key: "keywords", width: 30 },
+    ];
+
+    assets.forEach((asset) => {
+      ws.addRow({
+        primaryText: asset.primaryText.join(" | "),
+        secondaryText: asset.secondaryText,
+        keywords: asset.keywords?.join(", "),
+      });
     });
+
+    const buf = await wb.xlsx.writeBuffer();
+    const blob = new Blob([buf], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "assets.xlsx";
+    a.click();
+    window.URL.revokeObjectURL(url);
   };
-  
-  const exportToExcel = () => {
-    // Placeholder for Excel export functionality
-    alert('Export to Excel functionality will be implemented');
-  };
-  
+
   return (
-    <div className="space-y-6">
-      <Section title="Generated Assets">
-        <div className="flex flex-wrap gap-2 mb-4">
-          <Button onClick={exportToExcel}>Export to Excel</Button>
-        </div>
-        {assets.length === 0 ? (
-          <p className="text-gray-500">No assets generated yet. Go to the Brief tab and generate some assets.</p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {assets.map((asset) => (
-              <AssetCard key={asset.id} asset={asset} onDownload={downloadAsset} onCopyToClipboard={copyToClipboard} />
-            ))}
+    <div>
+      <h1 className="text-xl font-semibold mb-4">Assets</h1>
+      <button
+        onClick={exportToExcel}
+        className="px-4 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700"
+      >
+        Export to Excel
+      </button>
+      <div className="mt-6 space-y-4">
+        {assets.map((asset) => (
+          <div
+            key={asset.id}
+            className="p-4 glass-dark"
+          >
+            <p className="font-medium">{asset.primaryText.join(" | ")}</p>
+            {asset.secondaryText && (
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {asset.secondaryText}
+              </p>
+            )}
+            {asset.keywords?.length ? (
+              <p className="text-xs text-gray-400">
+                Keywords: {asset.keywords.join(", ")}
+              </p>
+            ) : null}
           </div>
-        )}
-      </Section>
+        ))}
+      </div>
     </div>
   );
 }

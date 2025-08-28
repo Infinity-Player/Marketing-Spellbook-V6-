@@ -4,8 +4,8 @@ import GlassmorphismCard from './ui/GlassmorphismCard';
 
 type Asset = {
   id: number;
-  headlines: string[] | string;  // allow string or array
-  primaryText: string[] | string; // allow string or array
+  headlines: string[] | string;
+  primaryText: string[] | string;
   emailSubject?: string;
   emailBody?: string;
   variants?: {
@@ -22,6 +22,19 @@ type Props = {
 };
 
 export default function AssetCard({ asset, onDownload, onCopyToClipboard }: Props) {
+  // ✅ Normalize everything to arrays so rendering is safe
+  const headlinesArr = Array.isArray(asset.headlines)
+    ? asset.headlines
+    : asset.headlines
+    ? [asset.headlines]
+    : [];
+
+  const primaryTextArr = Array.isArray(asset.primaryText)
+    ? asset.primaryText
+    : asset.primaryText
+    ? [asset.primaryText]
+    : [];
+
   return (
     <GlassmorphismCard>
       <div className="flex justify-between items-start mb-4">
@@ -30,13 +43,14 @@ export default function AssetCard({ asset, onDownload, onCopyToClipboard }: Prop
           Download JSON
         </Button>
       </div>
+
       <div className="space-y-4">
         {/* Headlines */}
-        <div>
-          <h4 className="font-medium text-md mb-2">Headlines</h4>
-          <div className="flex flex-wrap gap-2">
-            {Array.isArray(asset.headlines) ? (
-              asset.headlines.map((headline, index) => (
+        {headlinesArr.length > 0 && (
+          <div>
+            <h4 className="font-medium text-md mb-2">Headlines</h4>
+            <div className="flex flex-wrap gap-2">
+              {headlinesArr.map((headline, index) => (
                 <div
                   key={index}
                   className="bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-lg flex items-center gap-2"
@@ -50,35 +64,32 @@ export default function AssetCard({ asset, onDownload, onCopyToClipboard }: Prop
                     Copy
                   </Button>
                 </div>
-              ))
-            ) : (
-              <div className="bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-lg flex items-center gap-2">
-                <span className="mr-2 text-sm">{asset.headlines}</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onCopyToClipboard(String(asset.headlines))}
-                >
-                  Copy
-                </Button>
-              </div>
-            )}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Primary Text */}
-        <div>
-          <h4 className="font-medium text-md mb-2">Primary Text</h4>
-          <ul className="list-disc pl-5 space-y-1">
-            {Array.isArray(asset.primaryText) ? (
-              asset.primaryText.map((text, index) => (
-                <li key={index} className="text-sm">{text}</li>
-              ))
-            ) : (
-              asset.primaryText && <li className="text-sm">{asset.primaryText}</li>
-            )}
-          </ul>
-        </div>
+        {primaryTextArr.length > 0 && (
+          <div>
+            <h4 className="font-medium text-md mb-2">Primary Text</h4>
+            <ul className="list-disc pl-5 space-y-1">
+              {primaryTextArr.map((text, index) => (
+                <li key={index} className="text-sm">
+                  {text}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="ml-2"
+                    onClick={() => onCopyToClipboard(text)}
+                  >
+                    Copy
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* Email Subject */}
         {asset.emailSubject && (
