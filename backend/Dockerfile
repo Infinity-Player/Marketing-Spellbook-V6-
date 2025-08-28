@@ -1,7 +1,18 @@
-FROM node:18
+FROM node:18-alpine
+
+# Create app dir
 WORKDIR /app
+
+# Install deps
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm install --production
+
+# Copy source
 COPY . .
-EXPOSE 4000
-CMD ["node","server.js"]
+
+# Expose port
+ENV PORT=5000
+EXPOSE 5000
+
+# Start
+CMD ["node", "server.js"]

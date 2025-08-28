@@ -1,8 +1,13 @@
-FROM node:18
+FROM node:18-alpine
+
 WORKDIR /app
+
 COPY package*.json ./
-# Install all dependencies (including dev) so Next.js won't try to install at runtime in development
-RUN npm ci
+RUN npm install --production
+
 COPY . .
+
+RUN npm run build
+
 EXPOSE 3000
-CMD ["npm","run","start"]
+CMD ["npm", "start"]

@@ -1,14 +1,15 @@
-import './globals.css';
-import React from 'react';
+import type { AppProps } from 'next/app'
+import Head from 'next/head'
+import '@/styles/globals.css'
 
-export const metadata = { title: 'Marketing Spellbook Ultimate v6' };
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function App({ Component, pageProps }: AppProps) {
   return (
-    <html lang="en">
-      <body>
-        {children}
-      </body>
-    </html>
-  );
+    <>
+      <Head>
+        <link rel="icon" href="/favicon.ico" />
+        <title>Marketing Spellbook</title>
+      </Head>
+      <Component {...pageProps} />
+    </>
+  )
 }

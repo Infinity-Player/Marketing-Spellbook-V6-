@@ -1,4 +1,4 @@
-// File: c:\Users\almaa\Downloads\marketing-spellbook-v6-complete\frontend\app\layout.tsx
+// File: C:\Users\almaa\Downloads\marketing-spellbook-v6-complete\frontend\app\layout.tsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
