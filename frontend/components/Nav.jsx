@@ -1,30 +1,11 @@
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-
-export default function Nav() {
-  const pathname = usePathname();
-  const navItems = [
-    { href: "/", label: "Home" },
-    { href: "/assets", label: "Assets" },
-    { href: "/insights", label: "Insights" },
-    { href: "/brief", label: "Brief" },
-  ];
-
+import React from 'react'
+export default function Nav({ current, setCurrent }){
+  const tabs = ['Brief','Assets','Brand Brain','Personas','A/B Tests','Scheduler','Insights','Report','Library','Creative','Profile']
   return (
-    <nav className="flex space-x-6">
-      {navItems.map((item) => (
-        <Link
-          key={item.href}
-          href={item.href}
-          className={`text-sm font-medium ${
-            pathname === item.href
-              ? "text-purple-600 dark:text-purple-400"
-              : "text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white"
-          }`}
-        >
-          {item.label}
-        </Link>
+    <div className="flex flex-wrap gap-2 mb-4">
+      {tabs.map(t => (
+        <button key={t} onClick={()=>setCurrent(t)} className={"btn " + (current===t ? "bg-gray-900 text-white" : "btn-ghost")}>{t}</button>
       ))}
-    </nav>
-  );
+    </div>
+  )
 }
