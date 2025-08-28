@@ -4,8 +4,8 @@ import GlassmorphismCard from './ui/GlassmorphismCard';
 
 type Asset = {
   id: number;
-  headlines: string[];
-  primaryText: string[];
+  headlines: string[] | string;  // allow string or array
+  primaryText: string[] | string; // allow string or array
   emailSubject?: string;
   emailBody?: string;
   variants?: {
@@ -31,37 +31,64 @@ export default function AssetCard({ asset, onDownload, onCopyToClipboard }: Prop
         </Button>
       </div>
       <div className="space-y-4">
+        {/* Headlines */}
         <div>
           <h4 className="font-medium text-md mb-2">Headlines</h4>
           <div className="flex flex-wrap gap-2">
-            {asset.headlines.map((headline, index) => (
-              <div key={index} className="bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-lg flex items-center gap-2">
-                <span className="mr-2 text-sm">{headline}</span>
+            {Array.isArray(asset.headlines) ? (
+              asset.headlines.map((headline, index) => (
+                <div
+                  key={index}
+                  className="bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-lg flex items-center gap-2"
+                >
+                  <span className="mr-2 text-sm">{headline}</span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onCopyToClipboard(headline)}
+                  >
+                    Copy
+                  </Button>
+                </div>
+              ))
+            ) : (
+              <div className="bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-lg flex items-center gap-2">
+                <span className="mr-2 text-sm">{asset.headlines}</span>
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => onCopyToClipboard(headline)}
+                  onClick={() => onCopyToClipboard(String(asset.headlines))}
                 >
                   Copy
                 </Button>
               </div>
-            ))}
+            )}
           </div>
         </div>
+
+        {/* Primary Text */}
         <div>
           <h4 className="font-medium text-md mb-2">Primary Text</h4>
           <ul className="list-disc pl-5 space-y-1">
-            {asset.primaryText.map((text, index) => (
-              <li key={index} className="text-sm">{text}</li>
-            ))}
+            {Array.isArray(asset.primaryText) ? (
+              asset.primaryText.map((text, index) => (
+                <li key={index} className="text-sm">{text}</li>
+              ))
+            ) : (
+              asset.primaryText && <li className="text-sm">{asset.primaryText}</li>
+            )}
           </ul>
         </div>
+
+        {/* Email Subject */}
         {asset.emailSubject && (
           <div>
             <h4 className="font-medium text-md mb-2">Email Subject</h4>
             <p className="text-sm">{asset.emailSubject}</p>
           </div>
         )}
+
+        {/* Email Body */}
         {asset.emailBody && (
           <div>
             <h4 className="font-medium text-md mb-2">Email Body</h4>
@@ -70,6 +97,8 @@ export default function AssetCard({ asset, onDownload, onCopyToClipboard }: Prop
             </pre>
           </div>
         )}
+
+        {/* Variants */}
         {asset.variants && asset.variants.length > 0 && (
           <div>
             <h4 className="font-medium text-md mb-2">Variants</h4>

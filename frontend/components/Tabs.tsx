@@ -1,53 +1,39 @@
-// frontend/components/Tabs.tsx
-'use client'
+'use client';
 import React, { useState } from 'react';
 
-type TabDef = {
-  id: string;              // stable string id
-  label: React.ReactNode;
+type Tab = {
+  id: string;
+  label: string;
   panel: React.ReactNode;
 };
 
-export default function Tabs({ tabs }: { tabs: TabDef[] }) {
-  const [active, setActive] = useState<string>(tabs[0]?.id ?? '');
+interface TabsProps {
+  tabs: Tab[];
+}
+
+export default function Tabs({ tabs }: TabsProps) {
+  const [activeTab, setActiveTab] = useState<string>(tabs[0].id);
 
   return (
     <div>
-      <div role="tablist" aria-label="Primary tabs" className="flex gap-2">
-        {tabs.map((t) => {
-          const isActive = active === t.id;
-          return (
-            <button
-              key={t.id}
-              type="button"                     // <- prevents accidental form submit
-              role="tab"
-              aria-selected={isActive}
-              aria-controls={`panel-${t.id}`}
-              id={`tab-${t.id}`}
-              onClick={() => setActive(t.id)}
-              className={
-                `px-3 py-2 rounded-md focus:outline-none transition ` +
-                (isActive ? 'bg-indigo-600 text-white' : 'bg-transparent text-gray-700')
-              }
-            >
-              {t.label}
-            </button>
-          );
-        })}
+      {/* Tab headers */}
+      <div className="flex space-x-4 border-b">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            className={`p-2 ${
+              activeTab === tab.id ? 'border-b-2 border-blue-500 font-bold' : ''
+            }`}
+            onClick={() => setActiveTab(tab.id)}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
+      {/* Active tab panel */}
       <div className="mt-4">
-        {tabs.map((t) => (
-          <div
-            key={t.id}
-            role="tabpanel"
-            id={`panel-${t.id}`}
-            aria-labelledby={`tab-${t.id}`}
-            hidden={active !== t.id}            // hidden keeps DOM in place; toggles visibility
-          >
-            {t.panel}
-          </div>
-        ))}
+        {tabs.find((tab) => tab.id === activeTab)?.panel}
       </div>
     </div>
   );
