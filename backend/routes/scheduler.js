@@ -1,20 +1,21 @@
-import { Router } from "express"
-const router = Router()
+const express = require("express");
+const router = express.Router();
 
-let events = []
+let tasks = [
+  { id: 1, title: "Post blog on LinkedIn", date: "2025-09-01" },
+  { id: 2, title: "Run Twitter campaign", date: "2025-09-05" },
+];
 
-router.get("/", async (_req, res) => res.json(events))
+// GET tasks
+router.get("/", (req, res) => {
+  res.json(tasks);
+});
 
-router.post("/", async (req, res) => {
-  const e = { id: String(Date.now()), ...req.body }
-  events.push(e)
-  res.json(e)
-})
+// POST add task
+router.post("/", (req, res) => {
+  const newTask = { id: Date.now(), ...req.body };
+  tasks.push(newTask);
+  res.json(newTask);
+});
 
-router.delete("/:id", async (req, res) => {
-  const { id } = req.params
-  events = events.filter((e) => e.id !== id)
-  res.json({ ok: true })
-})
-
-export default router
+module.exports = router;

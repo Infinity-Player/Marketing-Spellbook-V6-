@@ -1,13 +1,22 @@
-import { Router } from "express"
-const router = Router()
+const express = require("express");
+const router = express.Router();
 
-let profile = { name: "Spellbook User", email: "user@example.com", company: "Acme Co." }
+let profile = {
+  id: 1,
+  name: "Jane Doe",
+  email: "jane@example.com",
+  role: "Marketer",
+};
 
-router.get("/", async (_req, res) => res.json(profile))
+// GET profile
+router.get("/", (req, res) => {
+  res.json(profile);
+});
 
-router.put("/", async (req, res) => {
-  profile = { ...profile, ...req.body }
-  res.json(profile)
-})
+// PUT update profile
+router.put("/", (req, res) => {
+  profile = { ...profile, ...req.body };
+  res.json(profile);
+});
 
-export default router
+module.exports = router;

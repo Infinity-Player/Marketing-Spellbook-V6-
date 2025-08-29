@@ -1,14 +1,15 @@
-import { Router } from "express"
-const router = Router()
+const express = require("express");
+const router = express.Router();
 
-const insights = [
-  { day: "Mon", clicks: 120 },
-  { day: "Tue", clicks: 200 },
-  { day: "Wed", clicks: 170 },
-  { day: "Thu", clicks: 250 },
-  { day: "Fri", clicks: 300 },
-]
+let insights = [
+  { id: 1, metric: "CTR", value: "4.5%" },
+  { id: 2, metric: "Conversions", value: "120" },
+  { id: 3, metric: "Bounce Rate", value: "37%" },
+];
 
-router.get("/", async (_req, res) => res.json(insights))
+// GET insights
+router.get("/", (req, res) => {
+  res.json(insights);
+});
 
-export default router
+module.exports = router;

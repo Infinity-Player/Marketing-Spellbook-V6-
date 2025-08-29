@@ -1,25 +1,21 @@
-import { Router } from "express"
-const router = Router()
+const express = require("express");
+const router = express.Router();
 
-// basic demo assets (in-memory)
 let assets = [
-  { id: "1", primaryText: ["Summer Sale — Up to 50% Off!"], keywords: ["sale", "summer", "discount"] },
-  { id: "2", primaryText: ["Meet EcoSip: Your new daily cup."], keywords: ["eco", "cup", "sustainable"] },
-]
+  { id: 1, name: "Ad Banner", type: "image", url: "/files/banner.png" },
+  { id: 2, name: "Promo Video", type: "video", url: "/files/video.mp4" },
+];
 
-router.get("/", async (_req, res) => {
-  res.json(assets)
-})
+// GET assets
+router.get("/", (req, res) => {
+  res.json(assets);
+});
 
-router.post("/", async (req, res) => {
-  // you can accept a briefId or payload to "generate"
-  const { seed } = req.body || {}
-  const newAsset = {
-    id: String(Date.now()),
-    primaryText: [`Generated asset based on: ${seed || "N/A"}`],
-  }
-  assets.unshift(newAsset)
-  res.json(newAsset)
-})
+// POST add asset
+router.post("/", (req, res) => {
+  const newAsset = { id: Date.now(), ...req.body };
+  assets.push(newAsset);
+  res.json(newAsset);
+});
 
-export default router
+module.exports = router;
