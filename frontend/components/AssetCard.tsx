@@ -1,128 +1,98 @@
-import React from 'react';
-import Button from './ui/Button';
-import GlassmorphismCard from './ui/GlassmorphismCard';
+import React from "react"
+import { Button } from "./ui/Button"
+import GlassmorphismCard from "./ui/GlassmorphismCard"
 
 type Asset = {
-  id: number;
-  headlines: string[] | string;
-  primaryText: string[] | string;
-  emailSubject?: string;
-  emailBody?: string;
+  id: number | string
+  headlines?: string[] | string
+  primaryText?: string[] | string
+  emailSubject?: string
+  emailBody?: string
+  keywords?: string[] | string
   variants?: {
-    id: string;
-    hypothesis: string;
-    headline: string;
-  }[];
-};
+    id: string
+    hypothesis: string
+    headline: string
+  }[]
+}
 
 type Props = {
-  asset: Asset;
-  onDownload: (asset: Asset) => void;
-  onCopyToClipboard: (text: string) => void;
-};
+  asset: Asset
+  onCopyToClipboard: (text: string) => void
+}
 
-export default function AssetCard({ asset, onDownload, onCopyToClipboard }: Props) {
-  // ✅ Normalize everything to arrays so rendering is safe
-  const headlinesArr = Array.isArray(asset.headlines)
-    ? asset.headlines
-    : asset.headlines
-    ? [asset.headlines]
-    : [];
+function toArray(x?: string[] | string): string[] {
+  if (!x) return []
+  return Array.isArray(x) ? x : [x]
+}
 
-  const primaryTextArr = Array.isArray(asset.primaryText)
-    ? asset.primaryText
-    : asset.primaryText
-    ? [asset.primaryText]
-    : [];
+export default function AssetCard({ asset, onCopyToClipboard }: Props) {
+  const headlines = toArray(asset.headlines)
+  const primaryText = toArray(asset.primaryText)
+  const keywords = toArray(asset.keywords)
 
   return (
-    <GlassmorphismCard>
-      <div className="flex justify-between items-start mb-4">
-        <h3 className="font-semibold text-lg">Asset #{asset.id}</h3>
-        <Button variant="ghost" onClick={() => onDownload(asset)}>
-          Download JSON
-        </Button>
+    <GlassmorphismCard className="space-y-3">
+      <div className="flex items-center justify-between">
+        <h4 className="font-semibold">Asset {asset.id}</h4>
       </div>
 
-      <div className="space-y-4">
-        {/* Headlines */}
-        {headlinesArr.length > 0 && (
-          <div>
-            <h4 className="font-medium text-md mb-2">Headlines</h4>
-            <div className="flex flex-wrap gap-2">
-              {headlinesArr.map((headline, index) => (
-                <div
-                  key={index}
-                  className="bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-lg flex items-center gap-2"
-                >
-                  <span className="mr-2 text-sm">{headline}</span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onCopyToClipboard(headline)}
-                  >
-                    Copy
-                  </Button>
-                </div>
-              ))}
-            </div>
+      {headlines.length > 0 && (
+        <div>
+          <div className="text-sm font-medium mb-1">Headlines</div>
+          <div className="flex flex-wrap gap-2">
+            {headlines.map((headline, index) => (
+              <div key={index} className="bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-lg flex items-center gap-2">
+                <span className="mr-2 text-sm">{headline}</span>
+                <Button variant="ghost" size="sm" onClick={() => onCopyToClipboard(headline)}>
+                  Copy
+                </Button>
+              </div>
+            ))}
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Primary Text */}
-        {primaryTextArr.length > 0 && (
-          <div>
-            <h4 className="font-medium text-md mb-2">Primary Text</h4>
-            <ul className="list-disc pl-5 space-y-1">
-              {primaryTextArr.map((text, index) => (
-                <li key={index} className="text-sm">
-                  {text}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="ml-2"
-                    onClick={() => onCopyToClipboard(text)}
-                  >
-                    Copy
-                  </Button>
-                </li>
-              ))}
-            </ul>
+      {primaryText.length > 0 && (
+        <div>
+          <div className="text-sm font-medium mb-1">Primary Text</div>
+          <div className="space-y-2">
+            {primaryText.map((p, i) => (
+              <div key={i} className="bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-lg flex items-center justify-between gap-2">
+                <span className="text-sm">{p}</span>
+                <Button variant="ghost" size="sm" onClick={() => onCopyToClipboard(p)}>
+                  Copy
+                </Button>
+              </div>
+            ))}
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Email Subject */}
-        {asset.emailSubject && (
-          <div>
-            <h4 className="font-medium text-md mb-2">Email Subject</h4>
-            <p className="text-sm">{asset.emailSubject}</p>
-          </div>
-        )}
+      {keywords.length > 0 && (
+        <div className="text-xs text-gray-500">Keywords: {keywords.join(", ")}</div>
+      )}
 
-        {/* Email Body */}
-        {asset.emailBody && (
-          <div>
-            <h4 className="font-medium text-md mb-2">Email Body</h4>
-            <pre className="whitespace-pre-wrap bg-gray-100 dark:bg-gray-800 p-3 rounded-lg text-sm">
-              {asset.emailBody}
-            </pre>
+      {asset.emailSubject && (
+        <div>
+          <div className="text-sm font-medium mb-1">Email Subject</div>
+          <div className="bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-lg flex items-center justify-between gap-2">
+            <span className="text-sm">{asset.emailSubject}</span>
+            <Button variant="ghost" size="sm" onClick={() => onCopyToClipboard(asset.emailSubject!)}>
+              Copy
+            </Button>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Variants */}
-        {asset.variants && asset.variants.length > 0 && (
-          <div>
-            <h4 className="font-medium text-md mb-2">Variants</h4>
-            <ul className="list-disc pl-5 space-y-1">
-              {asset.variants.map((variant) => (
-                <li key={variant.id} className="text-sm">
-                  <strong>{variant.hypothesis}</strong>: {variant.headline}
-                </li>
-              ))}
-            </ul>
+      {asset.emailBody && (
+        <div>
+          <div className="text-sm font-medium mb-1">Email Body</div>
+          <div className="bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-lg">
+            <pre className="whitespace-pre-wrap text-sm">{asset.emailBody}</pre>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </GlassmorphismCard>
-  );
+  )
 }
