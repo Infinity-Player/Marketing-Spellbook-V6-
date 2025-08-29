@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Tabs from "@/components/Tabs";
-import BriefPage from "@/components/BriefPage";
+import BriefPage from "@/components/BriefTab";
 import AssetsPage from "@/components/AssetsPage";
 import InsightsPage from "@/components/InsightsPage";
 import ReportsPage from "@/components/tabs/ReportsTab";
