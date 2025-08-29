@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Section from './Section';
 import { Input, Textarea } from './ui/Input';
-import Button from './ui/Button';
+import { Button } from './ui/Button';
 import GlassmorphismCard from './ui/GlassmorphismCard';
 
 type Brief = {
